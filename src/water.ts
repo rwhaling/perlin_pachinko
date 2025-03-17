@@ -88,7 +88,7 @@ const fishColor = "#FFB433"
 const lightBackgroundColor = "#98D8EF"
 const backgroundColor = "#81BFDA"
 
-const vectorColor = "#80CBC4"
+const vectorColor = "#7E99A3"
 
 // This type represents the parameter store structure
 export type ParameterStore = {
@@ -259,8 +259,12 @@ export function createSketch(parameterStore: ParameterStore) {
       // Draw flow field vectors on main canvas
       for (let x = startX + stepSizeX/2; x <= endX; x += stepSizeX) {
         for (let y = startY + stepSizeY/2; y <= endY; y += stepSizeY) {
-          let angle = p.noise((x + noiseOffsetX) * noiseScale, (y + noiseOffsetY) * noiseScale, time);
-          let angleRadians = 2 * angle * Math.PI * 2;
+          let noiseValue = p.noise(
+            (x + noiseOffsetX) * noiseScale,
+            (y + noiseOffsetY) * noiseScale,
+            time
+        );
+        let angleRadians = 1 * noiseValue * Math.PI;
           let x1 = x + (stepSizeX * 0.5) * Math.cos(angleRadians);
           let y1 = y + (stepSizeY * 0.5) * Math.sin(angleRadians);
 

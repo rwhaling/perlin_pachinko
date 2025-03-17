@@ -252,8 +252,14 @@ export function createSketch(parameterStore: ParameterStore) {
       // Draw flow field vectors on main canvas
       for (let x = startX + stepSizeX/2; x <= endX; x += stepSizeX) {
         for (let y = startY + stepSizeY/2; y <= endY; y += stepSizeY) {
-          let angle = p.noise((x + noiseOffsetX) * noiseScale, (y + noiseOffsetY) * noiseScale, time);
-          let angleRadians = 2 * angle * Math.PI * 2;
+          let noiseValue = p.noise(
+            (x + noiseOffsetX) * noiseScale, 
+            (y + noiseOffsetY) * noiseScale, 
+            time
+          );
+          let angleRadians = noiseValue * Math.PI;
+  
+
           let x1 = x + (stepSizeX * 0.5) * Math.cos(angleRadians);
           let y1 = y + (stepSizeY * 0.5) * Math.sin(angleRadians);
           
@@ -309,7 +315,7 @@ export function createSketch(parameterStore: ParameterStore) {
           (particle.pos.y + noiseOffsetY) * noiseScale, 
           time
         );
-        let angleRadians = 2 * noiseValue * Math.PI * 2;
+        let angleRadians = noiseValue * Math.PI;
         
         // Update particle physics based on flow field
         updateParticle(particle, angleRadians);
