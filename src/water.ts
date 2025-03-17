@@ -140,7 +140,7 @@ export function createSketch(parameterStore: ParameterStore) {
           new URL("/public/fonts/inconsolata.otf", import.meta.url).href
       );
 
-      ocean = p.loadImage("/public/images/ocean.png");
+      ocean = p.loadImage("./ocean.png");
 
     };
 
