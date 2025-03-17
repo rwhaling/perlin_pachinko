@@ -2,6 +2,7 @@ import p5 from "p5";
 import React, { useState, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { createSketch, numericParameterDefs, initParameterStore, ParameterStore } from "./sketch";
+import { createSketch as createWaterSketch, numericParameterDefs as waterNumericParameterDefs, initParameterStore as initWaterParameterStore } from "./water";
 import { createSketch as createCrimsonSketch, numericParameterDefs as crimsonNumericParameterDefs, initParameterStore as initCrimsonParameterStore } from "./flow_field_test";
 import { createSketch as createQrSketch6, numericParameterDefs as qrNumericParameterDefs6, initParameterStore as initQrParameterStore6 } from "./broken_qr_1";
 import { createSketch as createPrintSketch1, numericParameterDefs as printNumericParameterDefs1, initParameterStore as initPrintParameterStore1 } from "./print_sketch_1";
@@ -14,6 +15,13 @@ let cycleSketch: () => void = () => {};
 // Create a map of sketch configurations
 const sketchConfigs = {
   default: {
+    name: "Water Sketch",
+    title: "this is a water sketch",
+    createSketch: createWaterSketch,
+    parameterDefs: waterNumericParameterDefs,
+    initStore: initWaterParameterStore
+  },
+  test: {
     name: "Test Flow Field",
     title: "this is just a flow field",
     createSketch: createCrimsonSketch,
@@ -56,7 +64,7 @@ function main(rootElement: HTMLElement) {
 // Split the React component into two parts: Title and Controls
 function TitleComponent() {
   const [sketchType, setSketchType] = useState<SketchType>("default");
-  
+
   // Function to cycle to next sketch
   const cycleToNextSketch = () => {
     const sketchTypes = Object.keys(sketchConfigs) as SketchType[];
@@ -64,31 +72,31 @@ function TitleComponent() {
     const nextIndex = (currentIndex + 1) % sketchTypes.length;
     setSketchType(sketchTypes[nextIndex]);
   };
-  
+
   // Assign the global function to our React component's function
   cycleSketch = cycleToNextSketch;
-  
+
   // Add global click handler
   useEffect(() => {
     function handleDocumentClick(e: MouseEvent) {
       // Check if the click target is a UI element
       const target = e.target as HTMLElement;
-      const isUIElement = 
-        target.tagName === 'BUTTON' || 
-        target.tagName === 'INPUT' || 
-        target.tagName === 'SELECT' || 
-        target.closest('.controls-panel') || 
+      const isUIElement =
+        target.tagName === 'BUTTON' ||
+        target.tagName === 'INPUT' ||
+        target.tagName === 'SELECT' ||
+        target.closest('.controls-panel') ||
         target.classList.contains('next-sketch-button');
-      
+
       // If it's not a UI element, cycle to the next sketch
       if (!isUIElement) {
         cycleToNextSketch();
       }
     }
-    
+
     // Add event listener
     document.addEventListener('click', handleDocumentClick);
-    
+
     // Clean up
     return () => {
       document.removeEventListener('click', handleDocumentClick);
@@ -105,17 +113,17 @@ function TitleComponent() {
 
   useEffect(() => {
     const config = sketchConfigs[sketchType];
-    
+
     const newParams = config.initStore();
-    
+
     parameterStore = newParams;
-    
+
     if (p5Instance) {
       p5Instance.remove();
     }
-    
+
     p5Instance = new p5(config.createSketch(parameterStore), rootEl!);
-    
+
     return () => {
       if (p5Instance) {
         p5Instance.remove();
@@ -140,7 +148,7 @@ function TestApp() {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('debug') === 'true';
   });
-  
+
   // Get current sketch type from global state
   const [numericParameters, setNumericParameters] = useState(initParameterStore());
 
@@ -170,7 +178,7 @@ function TestApp() {
   return (
     <>
       {/* Add the next sketch button */}
-      <button 
+      <button
         className="next-sketch-button"
         onClick={cycleSketch}
       >
@@ -206,7 +214,7 @@ function TestApp() {
             {showParams ? 'Hide Parameters' : 'Show Parameters'}
           </button>
         </div>
-        
+
         <h2 className="text-xl font-bold mb-6 text-gray-700">Parameters</h2>
         {Object.entries(currentParameterDefs).map(([key, value]) => (
           <div key={key} className="mb-4 flex items-center gap-4">
