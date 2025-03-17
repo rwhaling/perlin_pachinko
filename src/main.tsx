@@ -12,8 +12,25 @@ type SketchType = "default" | "crimson";
 // Create a global function to cycle sketches that can be called from outside React
 let cycleSketch: () => void = () => {};
 
+// Add this type definition before your sketchConfigs object
+type ParameterDefinition = {
+  min: number;
+  max: number;
+  step: number;
+  defaultValue: number;
+};
+
+// Update your sketch configuration type
+type SketchConfig = {
+  name: string;
+  title: string;
+  createSketch: Function;
+  parameterDefs: Record<string, ParameterDefinition>;
+  initStore: () => any;
+};
+
 // Create a map of sketch configurations
-const sketchConfigs = {
+const sketchConfigs: Record<string, SketchConfig> = {
   default: {
     name: "Water Sketch",
     title: "this is a water sketch",
