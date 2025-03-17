@@ -202,8 +202,8 @@ export function createSketch(parameterStore: ParameterStore) {
         particle.prevPos.y = p.height/2;
       }
       if (particle.pos.y > p.height/2) {
-        particle.pos.y = -p.height/2;
-        particle.prevPos.y = -p.height/2;
+        // particle.pos.y = -p.height/2;
+        // particle.prevPos.y = -p.height/2;
       }
     }
 
@@ -291,14 +291,14 @@ export function createSketch(parameterStore: ParameterStore) {
         // Create particle at random position
         particles.push(createParticle(
             p.random(startX, endX),
-            p.random(startY, endY)
+            -p.height/2
         ));
       }
 
       // Maximum number of particles - now from parameters
-      while (particles.length > parameterStore.particleMaxCount) {
-        particles.shift(); // Remove oldest particles if we have too many
-      }
+      // while (particles.length > parameterStore.particleMaxCount) {
+      //   particles.shift(); // Remove oldest particles if we have too many
+      // }
 
       // Draw particles to the particle layer
       particleLayer.push();
@@ -311,6 +311,8 @@ export function createSketch(parameterStore: ParameterStore) {
       // particleLayer.fill("#FFFFFF04");
 
       particleLayer.rect(-particleLayer.width/2, -particleLayer.height/2, particleLayer.width, particleLayer.height);
+
+      let particlesToRemove: number[] = []
 
       // Update and draw all particles on the particle layer
       for (let i = 0; i < particles.length; i++) {
@@ -326,6 +328,10 @@ export function createSketch(parameterStore: ParameterStore) {
 
         // Update particle physics based on flow field
         updateParticle(particle, angleRadians);
+        if (particle.pos.y > p.height/2) {
+          particlesToRemove.unshift(i);
+        }
+
 
         // Draw the particle on the particle layer
         particleLayer.blendMode(p.BLEND);
@@ -343,6 +349,10 @@ export function createSketch(parameterStore: ParameterStore) {
         particleLayer.circle(particle.pos.x, particle.pos.y, parameterStore.particleTrailWeight);
       }
       particleLayer.pop();
+
+      for (let i of particlesToRemove) {
+        particles.splice(i, 1);
+      }
 
       // Overlay the particle layer on the main canvas
       p.push();
