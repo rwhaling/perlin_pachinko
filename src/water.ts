@@ -48,7 +48,7 @@ export const numericParameterDefs = {
     "min": 0,
     "max": 255,
     "step": 1,
-    "defaultValue": 5,
+    "defaultValue": 50,
   },
   "gridSize": {
     "min": 10,
@@ -79,7 +79,7 @@ export const numericParameterDefs = {
     "min": 1,
     "max": 5,
     "step": 0.5,
-    "defaultValue": 2,
+    "defaultValue": 5,
   },
 };
 
@@ -226,6 +226,7 @@ export function createSketch(parameterStore: ParameterStore) {
       // Clear the particle layer each frame with transparent background
       // particleLayer.clear();
 
+      gridLayer.clear();
       // Instead of clearing, draw a semi-transparent black rectangle
       // that partially obscures previous frames
       gridLayer.push();
