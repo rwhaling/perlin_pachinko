@@ -90,6 +90,11 @@ const backgroundColor = "#81BFDA"
 
 const vectorColor = "#7E99A3"
 
+const bucketColor = "#ADA991"
+
+let bucketX;
+let caughtFishCount = 0
+
 
 // This type represents the parameter store structure
 export type ParameterStore = {
@@ -138,6 +143,13 @@ export function createSketch(parameterStore: ParameterStore) {
       ocean = p.loadImage("/public/images/ocean.png");
 
     };
+
+    p.mousePressed = function() {
+      console.log("mousePressed", p.mouseX, p.mouseY);
+      bucketX = p.mouseX;
+
+    }
+
 
     p.setup = function() {
       p.createCanvas(500, 500, p.WEBGL);
@@ -329,6 +341,12 @@ export function createSketch(parameterStore: ParameterStore) {
         // Update particle physics based on flow field
         updateParticle(particle, angleRadians);
         if (particle.pos.y > p.height/2) {
+          let adjustedX = particle.pos.x + p.width / 2
+          console.log("despawning", adjustedX, particle.pos.x)
+          if (adjustedX > bucketX && adjustedX < bucketX + 50){
+            caughtFishCount += 1
+          }
+
           particlesToRemove.unshift(i);
         }
 
@@ -363,6 +381,13 @@ export function createSketch(parameterStore: ParameterStore) {
 
       p.image(gridLayer, 0, 0, p.width, p.height);
       p.image(particleLayer, 0, 0, p.width, p.height);
+      p.fill(bucketColor)
+      p.noStroke()
+      p.rect(bucketX, p.height - 15, 50, 15)
+      p.textFont(font)
+      p.fill(0)
+      p.text(caughtFishCount, bucketX, p.height - 5)
+
       p.pop();
     };
   };

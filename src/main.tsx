@@ -95,12 +95,12 @@ function TitleComponent() {
     }
 
     // Add event listener
-    document.addEventListener('click', handleDocumentClick);
+    // document.addEventListener('click', handleDocumentClick);
 
     // Clean up
-    return () => {
-      document.removeEventListener('click', handleDocumentClick);
-    };
+    // return () => {
+    //   document.removeEventListener('click', handleDocumentClick);
+    // };
   }, [sketchType]); // Re-attach when sketch type changes
 
   // Get the current title from the sketchConfig
