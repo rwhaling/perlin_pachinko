@@ -90,6 +90,7 @@ const backgroundColor = "#81BFDA"
 
 const vectorColor = "#7E99A3"
 
+
 // This type represents the parameter store structure
 export type ParameterStore = {
   [K in keyof typeof numericParameterDefs]: number;
@@ -111,6 +112,7 @@ export function initParameterStore(): ParameterStore {
 export function createSketch(parameterStore: ParameterStore) {
   return function sketch(p: p5) {
     let font: p5.Font;
+    let ocean;
     // Create a separate graphics layer for particles
     let particleLayer: p5.Graphics;
     let gridLayer: p5.Graphics;
@@ -132,6 +134,9 @@ export function createSketch(parameterStore: ParameterStore) {
       font = p.loadFont(
           new URL("/public/fonts/inconsolata.otf", import.meta.url).href
       );
+
+      ocean = p.loadImage("/public/images/ocean.png");
+
     };
 
     p.setup = function() {
@@ -218,7 +223,6 @@ export function createSketch(parameterStore: ParameterStore) {
       p.noiseDetail(octaves, falloff);
       gridLayer.noiseDetail(octaves, falloff);
       particleLayer.noiseDetail(octaves, falloff);
-
       // Clear the particle layer each frame with transparent background
       // particleLayer.clear();
 
@@ -232,7 +236,7 @@ export function createSketch(parameterStore: ParameterStore) {
       gridLayer.fill(`${backgroundColor}${alphaHex}`); //
 
       gridLayer.noStroke();
-      gridLayer.rect(0, 0, p.width, p.height);
+      // gridLayer.rect(0, 0, p.width, p.height);
       gridLayer.pop();
 
       // get the current time
@@ -277,8 +281,10 @@ export function createSketch(parameterStore: ParameterStore) {
         }
       }
 
-      // After drawing the vector field, handle particles
+      p.image(ocean, 0, 0);
 
+
+      // After drawing the vector field, handle particles
       // Chance to spawn a new particle
       if (p.random(100) < 100/particleFrequency) {
         // Create particle at random position
@@ -342,6 +348,8 @@ export function createSketch(parameterStore: ParameterStore) {
       p.translate(-p.width/2, -p.height/2); // Move to top-left for image drawing
       p.imageMode(p.CORNER);
       p.blendMode(p.BLEND);
+      p.image(ocean, 0, 0, p.width, p.height)
+
       p.image(gridLayer, 0, 0, p.width, p.height);
       p.image(particleLayer, 0, 0, p.width, p.height);
       p.pop();
